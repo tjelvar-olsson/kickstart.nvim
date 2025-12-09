@@ -413,6 +413,7 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        defaults = require('telescope.themes').get_ivy(),
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
