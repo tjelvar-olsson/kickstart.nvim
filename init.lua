@@ -675,10 +675,12 @@ require('lazy').setup({
         -- clangd = {},
         -- gopls = {},
         pyright = {
+          -- Use pyright installed using uv instead of node
+          cmd = { '/home/tolsson/.local/bin/pyright-python-langserver', '--stdio' },
           settings = {
             pyright = {
-            -- Using Ruff's import organizer
-            disableOrganizeImports = true,
+              -- Using Ruff's import organizer
+              disableOrganizeImports = true,
             },
             python = {
               analysis = {
