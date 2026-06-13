@@ -405,7 +405,12 @@ do
   vim.pack.add { { src = "https://github.com/rose-pine/neovim", name = "rose-pine" } }
   require("rose-pine").setup({
     styles = {
-      italic = true,
+      italic = false,  -- disable global italics; re-enable per group below
+    },
+    highlight_groups = {
+      Comment                     = { italic = true },
+      ["@comment"]                = { italic = true },
+      ["@comment.documentation"]  = { italic = true },
     },
   })
   vim.cmd("colorscheme rose-pine")
