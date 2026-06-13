@@ -99,7 +99,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -110,7 +110,7 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -324,6 +324,12 @@ local function gh(repo) return 'https://github.com/' .. repo end
 -- guess-indent, gitsigns, which-key, colorscheme, todo-comments, mini modules
 -- ============================================================
 do
+  -- [[ Enable the new ui2 features ]]
+  require('vim._core.ui2').enable()
+
+  -- Make text that appears with actions like "K" pretty.
+  vim.opt.winborder = "rounded"
+
   -- [[ Installing and Configuring Plugins ]]
   --
   -- To install a plugin simply call `vim.pack.add` with its git url.
@@ -383,18 +389,26 @@ do
   -- change the command under that to load whatever the name of that colorscheme is.
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  vim.pack.add { gh 'folke/tokyonight.nvim' }
-  ---@diagnostic disable-next-line: missing-fields
-  require('tokyonight').setup {
-    styles = {
-      comments = { italic = false }, -- Disable italics in comments
-    },
-  }
+  -- vim.pack.add { gh 'folke/tokyonight.nvim' }
+  -- ---@diagnostic disable-next-line: missing-fields
+  -- require('tokyonight').setup {
+  --   styles = {
+  --     comments = { italic = true }, -- Disable italics in comments
+  --   },
+  -- }
 
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  -- vim.cmd.colorscheme 'tokyonight-night'
+
+  vim.pack.add { { src = "https://github.com/catppuccin/nvim", name = "catppuccin" } }
+  require("catppuccin").setup({
+    styles = {
+      comments = { "italic" },
+    },
+  })
+  vim.cmd("colorscheme catppuccin")
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -688,7 +702,7 @@ do
   local servers = {
     -- clangd = {},
     -- gopls = {},
-    -- pyright = {},
+    pyright = {},
     -- rust_analyzer = {},
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -777,7 +791,7 @@ do
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
         -- lua = true,
-        -- python = true,
+        python = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
@@ -793,6 +807,7 @@ do
       -- rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
+      python = { "ruff-fix", "ruff_organize_imports", "ruff_format", },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -883,7 +898,6 @@ do
     signature = { enabled = true },
   }
 end
-
 -- ============================================================
 -- SECTION 8: TREESITTER
 -- Parser installation, syntax highlighting, folds, indentation
@@ -965,12 +979,51 @@ do
   -- require 'kickstart.plugins.lint'
   -- require 'kickstart.plugins.autopairs'
   -- require 'kickstart.plugins.neo-tree'
-  -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
+  require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
+end
+
+do
+  -- [[ More UX ]]
+  -- Create a centered floating command line UI.
+  vim.o.cmdheight = 0
+  vim.pack.add({ "https://github.com/rachartier/tiny-cmdline.nvim" })
+  require("tiny-cmdline").setup({
+    -- Cmdline window width
+    width = {
+        value = "60%",  -- "N%" = fraction of editor columns, integer = absolute columns
+        min = 40,       -- minimum width in columns
+        max = 80,       -- maximum width in columns
+    },
+
+    -- Window position ("N%" = fraction of available space, integer = absolute columns/rows)
+    position = {
+        x = "50%",  -- horizontal: "0%" = left, "50%" = center, "100%" = right
+        y = "50%",  -- vertical:   "0%" = top,  "50%" = center, "100%" = bottom
+    },
+
+    -- Border style for the floating window
+    -- nil inherits vim.o.winborder at setup() time, falling back to "rounded"
+    -- Set to "none" to disable the border
+    border = nil,
+
+    -- Horizontal offset of the completion menu anchor from the window's left inner edge
+    -- Used to align blink.cmp / nvim-cmp menus with the cmdline window
+    menu_col_offset = 3,
+
+    -- Cmdline types rendered at the bottom of the screen instead of centered
+    -- "/" and "?" (search) are kept native by default
+    -- native_types = { "/", "?" },
+    native_types = { },
+
+    -- Optional callback invoked after every reposition
+    -- on_reposition = nil,
+    on_reposition = require("tiny-cmdline").adapters.blink,
+  })
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
