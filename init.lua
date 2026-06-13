@@ -411,6 +411,7 @@ do
       Comment                     = { italic = true },
       ["@comment"]                = { italic = true },
       ["@comment.documentation"]  = { italic = true },
+      ["@constant"]               = { fg = "text" },  -- ALL_CAPS vars: no special colour
     },
   })
   vim.cmd("colorscheme rose-pine")
