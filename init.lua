@@ -402,13 +402,13 @@ do
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
   -- vim.cmd.colorscheme 'tokyonight-night'
 
-  vim.pack.add { { src = "https://github.com/catppuccin/nvim", name = "catppuccin" } }
-  require("catppuccin").setup({
+  vim.pack.add { { src = "https://github.com/rose-pine/neovim", name = "rose-pine" } }
+  require("rose-pine").setup({
     styles = {
-      comments = { "italic" },
+      italic = true,
     },
   })
-  vim.cmd("colorscheme catppuccin")
+  vim.cmd("colorscheme rose-pine")
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
