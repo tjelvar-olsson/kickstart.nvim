@@ -412,7 +412,26 @@ do
       ["@comment"]                = { italic = true },
       ["@comment.documentation"]  = { italic = true },
       ["@constant"]               = { fg = "text" },  -- ALL_CAPS vars: no special colour
+      -- Transparent backgrounds for float windows
+      NormalFloat  = { bg = "none" },
+      FloatBorder  = { bg = "none" },
     },
+  })
+  -- Must be registered before vim.cmd("colorscheme") so it fires on initial load too
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    pattern = 'rose-pine*',
+    callback = function()
+      for _, group in ipairs({
+        'DiagnosticVirtualTextError', 'DiagnosticVirtualTextWarn',
+        'DiagnosticVirtualTextInfo', 'DiagnosticVirtualTextHint',
+        'DiagnosticVirtualTextOk', 'LspInlayHint',
+      }) do
+        local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
+        hl.bg = nil
+        hl.ctermbg = nil
+        vim.api.nvim_set_hl(0, group, hl)
+      end
+    end,
   })
   vim.cmd("colorscheme rose-pine")
 
@@ -983,7 +1002,7 @@ do
   -- require 'kickstart.plugins.debug'
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.autopairs'
   -- require 'kickstart.plugins.neo-tree'
   require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
